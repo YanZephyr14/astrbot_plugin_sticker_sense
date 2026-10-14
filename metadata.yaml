@@ -21,7 +21,9 @@ support_platforms:
   - discord
   - webchat
   - wecom
+category: "AI 增强"
 tags:
+  - AI 增强
   - sticker
   - meme
   - emotion
