@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.png" width="140" height="140" alt="Sticker Sense Logo" />
+</p>
+
 # 表情感知 (Sticker Sense) 🌠
 
 [![AstrBot](https://img.shields.io/badge/AstrBot->=4.5.7-blue.svg)](https://github.com/AstrBotDevs/AstrBot)
