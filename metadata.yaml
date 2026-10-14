@@ -14,8 +14,8 @@ repo: "https://github.com/YanZephyr14/astrbot_plugin_sticker_sense"
 astrbot_version: ">=4.5.7"
 support_platforms:
   - aiocqhttp
-  - qqofficial
-  - qqofficial_webhook
+  - qq_official
+  - qq_official_webhook
   - satori
   - telegram
   - discord
