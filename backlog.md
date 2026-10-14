@@ -15,5 +15,5 @@
 - [x] 编写详尽单元测试与 Mock 测试（`tests/test_sticker_sense.py`）
 - [x] 执行 Ruff 代码静态检查与格式化
 - [x] 验证所有单测用例全部通过
-- [ ] 创建 GitHub 远程仓库并完成首次推送
-- [ ] 更新根目录 `DEVLOG.md`
+- [x] 创建 GitHub 远程仓库并完成首次推送
+- [x] 更新根目录 `DEVLOG.md`
