@@ -1,0 +1,38 @@
+{
+  "enable_sticker_sense": {
+    "description": "启用表情与表情包感知",
+    "type": "bool",
+    "default": true,
+    "hint": "开启后，插件将自动识别用户发送的是表情包还是普通图片，并提示大模型以人类社交方式自然回应。"
+  },
+  "enable_face_translation": {
+    "description": "启用 QQ 原生表情翻译",
+    "type": "bool",
+    "default": true,
+    "hint": "将 QQ 经典小黄脸表情（如微笑、狗头）和商城表情转义为语义化文字（如 [表情: 狗头]），让大模型能看懂。"
+  },
+  "prompt_style": {
+    "description": "表情包交互引导风格",
+    "type": "string",
+    "default": "natural",
+    "options": ["natural", "humorous", "gentle"],
+    "hint": "natural: 自然日常聊天；humorous: 幽默风趣、积极接梗斗图；gentle: 温柔细腻、注重体察对方情绪。"
+  },
+  "max_sticker_dimension": {
+    "description": "表情包启发式最大边长(像素)",
+    "type": "int",
+    "default": 640,
+    "slider": {
+      "min": 256,
+      "max": 1280,
+      "step": 32
+    },
+    "hint": "当协议未提供表情包标识时，长宽均在此尺寸以内的静态图片将被优先判定为表情包/梗图（默认 640px）。"
+  },
+  "auto_fill_empty_prompt": {
+    "description": "纯表情包空文本自动兜底",
+    "type": "bool",
+    "default": true,
+    "hint": "当用户只发了表情包或纯表情而没有任何文字时，自动补充语义文字（如「用户发送了一张表情包」），防止机器人无法触发或冷场。"
+  }
+}

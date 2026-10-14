@@ -1,0 +1,7 @@
+name: "astrbot_plugin_sticker_sense"
+display_name: "表情感知 (Sticker Sense)"
+desc: "智能识别用户发送的是表情包还是普通图片，并支持QQ原生表情语义解析，引导大模型理解梗与情绪，自然幽默接招。"
+version: "v1.0.0"
+author: "YanZephyr14 & AstrBot Community"
+repo: "https://github.com/YanZephyr14/astrbot_plugin_sticker_sense"
+astrbot_version: ">=4.5.7"
