@@ -15,9 +15,9 @@
     "description": "表情包交互引导风格",
     "type": "string",
     "default": "natural",
-    "options": ["natural", "humorous", "gentle"],
-    "labels": ["自然日常", "幽默接梗", "温柔体察"],
-    "hint": "natural: 自然日常聊天；humorous: 幽默风趣、积极接梗斗图；gentle: 温柔细腻、注重体察对方情绪。"
+    "options": ["natural", "humorous", "gentle", "roast"],
+    "labels": ["自然日常", "幽默接梗", "温柔体察", "傲娇互怼/吐槽"],
+    "hint": "natural: 自然日常聊天；humorous: 幽默接梗；gentle: 温柔细腻；roast: 傲娇互怼或轻度吐槽（严格守住原有角色人设）。"
   },
   "max_sticker_dimension": {
     "description": "表情包启发式最大边长(像素)",
@@ -35,6 +35,12 @@
     "type": "bool",
     "default": true,
     "hint": "当用户只发了表情包或纯表情而没有任何文字时，自动补充语义文字（如「用户发送了一张表情包」），防止机器人无法触发或冷场。"
+  },
+  "enable_meme_reaction": {
+    "description": "启用双向斗图倾向提示",
+    "type": "bool",
+    "default": false,
+    "hint": "开启后，若用户发送表情包，将提示大模型在氛围适合时可主动斗图或配合表情包回应（建议在已安装表情包/斗图相关插件时开启，默认关闭）。"
   },
   "custom_prompt_guide": {
     "description": "自定义表情包引导追加词(可选)",

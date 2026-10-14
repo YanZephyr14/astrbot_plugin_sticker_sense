@@ -265,3 +265,64 @@ class TestStickerSensePlugin:
         assert "请用傲娇的语气吐槽" in text
         # face translation is disabled, so [表情: 微笑] should NOT appear
         assert "[表情: 微笑]" not in text
+
+    def test_dynamic_facetext_extraction(self):
+        detector = StickerDetector()
+        raw_msg = {
+            "message": [
+                {"type": "face", "data": {"id": 317, "raw": {"faceText": "/菜汪"}}},
+                {"type": "face", "data": {"id": 9999, "raw": {"faceText": "歪头猫猫"}}},
+                {"type": "face", "data": {"id": 14}},  # fallback to static
+            ]
+        }
+        _, faces = detector.inspect_protocol_segments(raw_msg)
+        assert len(faces) == 3
+        assert faces[0] == "[表情: 菜汪]"
+        assert faces[1] == "[表情: 歪头猫猫]"
+        assert faces[2] == "[表情: 微笑]"
+
+    @pytest.mark.asyncio
+    async def test_animated_sticker_anti_montage_guidance(self, temp_dir):
+        gif_path = create_test_image(
+            temp_dir / "anim.gif", size=(200, 200), is_animated=True
+        )
+        static_path = create_test_image(
+            temp_dir / "static.png", size=(200, 200), is_animated=False
+        )
+
+        context = MagicMock()
+        plugin = StickerSensePlugin(
+            context,
+            config={
+                "enable_sticker_sense": True,
+                "prompt_style": "roast",
+                "enable_meme_reaction": True,
+            },
+        )
+        await plugin.initialize()
+
+        # 1. 动图触发动图规范与双向斗图提示
+        event = MagicMock(spec=AstrMessageEvent)
+        event.unified_msg_origin = "qq:group:123"
+        event.message_obj = MagicMock()
+        event.message_obj.raw_message = None
+        event.message_obj.message = []
+
+        req_gif = ProviderRequest(prompt="")
+        req_gif.image_urls = [gif_path]
+        await plugin.on_llm_request(event, req_gif)
+        text_gif = req_gif.extra_user_content_parts[0].text
+        assert "【动图认知规范】" in text_gif
+        assert "切勿将其误认为九宫格" in text_gif
+        assert "幽默互怼或戏谑调侃" in text_gif  # roast 风格
+        assert "严格维持你既有性格人设的前提下进行" in text_gif  # 人设第一底线
+        assert "【双向斗图提示】" in text_gif
+
+        # 2. 静态小图片（非动图）不应包含动图认知规范（防止误伤真实拼图）
+        req_static = ProviderRequest(prompt="")
+        req_static.image_urls = [static_path]
+        await plugin.on_llm_request(event, req_static)
+        text_static = req_static.extra_user_content_parts[0].text
+        assert "【动图认知规范】" not in text_static
+        assert "切勿将其误认为九宫格" not in text_static
+        assert "【意图与人设原则】" in text_static

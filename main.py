@@ -56,11 +56,17 @@ class StickerSensePlugin(Star):
         """根据配置风格生成对应的交互要求。
 
         Args:
-            style: 风格名称 ('natural' | 'humorous' | 'gentle')。
+            style: 风格名称 ('natural' | 'humorous' | 'gentle' | 'roast')。
 
         Returns:
             针对该风格的提示文本。
         """
+        if style == "roast":
+            return (
+                "用户正在使用表情包与你幽默互怼或戏谑调侃！"
+                "请以机智幽默、轻度吐槽或动漫式傲娇的方式接招，"
+                "切勿死板看图说话。但注意必须在严格维持你既有性格人设的前提下进行，不可脱离人设！"
+            )
         if style == "humorous":
             return (
                 "用户正在使用表情包与你斗图或幽默互动！"
@@ -136,6 +142,20 @@ class StickerSensePlugin(Star):
             lines.append(
                 "【互动原则】：请结合该表情符号所体现的语气与情绪倾向，自然贴合地回应用户。"
             )
+
+        if sense.has_stickers:
+            if sense.has_animated_stickers:
+                lines.append(
+                    "【动图认知规范】：检测到动态表情包。若底层视觉服务将其分解为多帧排列，此排版仅为展示连贯动作，切勿将其误认为九宫格、拼图或数其帧数，请直接理解其连贯动作与情绪含义。"
+                )
+            lines.append(
+                "【意图与人设原则】：若表情包带有调侃、赞同、认怂或撒娇等潜台词，请自然接梗反应；无论何种互动，必须严格保持你既有的角色人设底线，不可脱离人设。"
+            )
+            enable_meme_reaction = self.config.get("enable_meme_reaction", False)
+            if enable_meme_reaction:
+                lines.append(
+                    "【双向斗图提示】：用户开启了斗图互动倾向。如果你觉得当前语境非常适合以表情包回敬（如极度无语、开怀大笑、傲娇吐槽时），可根据平台支持的表情或在适当情境下配合斗图，但请以文字对话为主，严禁每句都机械性回复表情。"
+                )
 
         custom_guide = (self.config.get("custom_prompt_guide") or "").strip()
         if custom_guide:
@@ -215,6 +235,7 @@ class StickerSensePlugin(Star):
         style = self.config.get("prompt_style", "natural")
         max_dim = self.config.get("max_sticker_dimension", 640)
         auto_fill = self.config.get("auto_fill_empty_prompt", True)
+        meme_reaction = self.config.get("enable_meme_reaction", False)
         custom_guide = self.config.get("custom_prompt_guide", "")
 
         msg = (
@@ -222,6 +243,7 @@ class StickerSensePlugin(Star):
             f"• 核心感知开关: {'🟢 启用' if enabled else '🔴 停用'}\n"
             f"• 表情符号转义: {'🟢 开启' if face_trans else '🔴 关闭'}\n"
             f"• 交互引导风格: {style}\n"
+            f"• 双向斗图倾向: {'🟢 开启' if meme_reaction else '🔴 关闭'}\n"
             f"• 启发式尺寸上限: {max_dim} px\n"
             f"• 空文本自动兜底: {'🟢 开启' if auto_fill else '🔴 关闭'}\n"
             f"• 自定义补充指引: {custom_guide if custom_guide else '(未设定)'}\n\n"

@@ -45,10 +45,25 @@
 ## 3. WebUI 配置项设计 (`_conf_schema.json`)
 - `enable_sticker_sense` (boolean): 是否开启表情感知功能，默认 true。
 - `enable_face_translation` (boolean): 是否开启 QQ 原生表情翻译，默认 true。
-- `prompt_style` (select): 表情包指引风格（`natural` 自然聊天 / `humorous` 幽默接梗 / `gentle` 温柔体贴）。
+- `prompt_style` (select): 表情包指引风格（`natural` 自然聊天 / `humorous` 幽默接梗 / `gentle` 温柔体贴 / `roast` 傲娇互怼/吐槽）。
 - `max_sticker_dimension` (number): 启发式判定表情包的最大单边像素（默认 640）。
 - `auto_fill_empty_prompt` (boolean): 纯表情包空文本自动兜底，默认 true。
+- `enable_meme_reaction` (boolean): 启用双向斗图倾向提示，默认 false。
 - `custom_prompt_guide` (text): 自定义表情包引导追加词，默认空。
+
+---
+
+## 4. 真实痛点迭代演进规范 (v1.1.0)
+1. **消除动图九宫格出戏幻觉**：
+   - 当检测为动画表情时，注入专属动图连贯认知规则，消除 AstrBot 动图抽帧合成网格导致的“九宫格九次”幻觉。
+   - 静态图片绝对不注入该规则，防止误伤真实摄影拼图与漫画。
+2. **QQ 官方表情 100% 动态语义提取**：
+   - 优先通过 `data.raw.faceText` 动态解析表情名，未命中再回退静态字典，全面支持最新小黄脸与商城表情。
+3. **意图感知深化与人设第一原则**：
+   - 引导模型感知调侃、认怂、赞赏、撒娇等常见梗图潜台词。
+   - 硬性约束模型在任何表情交互中必须严格坚守原本既定人设，杜绝 OOC。
+4. **受控的双向斗图倾向提示**：
+   - 配合 `enable_meme_reaction` 可选开关，允许在支持表情包插件（如 `meme_manager`）时适度接招斗图，默认关闭防止乱码泄漏与刷屏。
 
 ---
 

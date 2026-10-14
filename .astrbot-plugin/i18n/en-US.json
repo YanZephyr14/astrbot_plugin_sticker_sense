@@ -15,8 +15,8 @@
     },
     "prompt_style": {
       "description": "Interaction Style",
-      "labels": ["Natural", "Humorous", "Gentle"],
-      "hint": "natural: friendly daily conversation; humorous: witty banter and meme interaction; gentle: warm, attentive emotional validation."
+      "labels": ["Natural", "Humorous", "Gentle", "Roast / Banter"],
+      "hint": "natural: friendly daily chat; humorous: witty meme banter; gentle: warm emotional empathy; roast: playful teasing and tsundere banter (strictly bounded by persona)."
     },
     "max_sticker_dimension": {
       "description": "Max Sticker Dimension (px)",
@@ -25,6 +25,10 @@
     "auto_fill_empty_prompt": {
       "description": "Auto Fallback for Empty Prompt",
       "hint": "Automatically fills empty prompts with semantic hints when users send only stickers or emojis."
+    },
+    "enable_meme_reaction": {
+      "description": "Enable Meme Reaction / Banter Guidance",
+      "hint": "When enabled, prompts the LLM to actively engage in meme battles or reply with stickers when suitable."
     },
     "custom_prompt_guide": {
       "description": "Custom Prompt Guidance (Optional)",

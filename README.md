@@ -6,7 +6,7 @@
 
 [![AstrBot](https://img.shields.io/badge/AstrBot->=4.5.7-blue.svg)](https://github.com/AstrBotDevs/AstrBot)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![GitHub release](https://img.shields.io/badge/release-v1.0.0-orange.svg)](https://github.com/YanZephyr14/astrbot_plugin_sticker_sense)
+[![GitHub release](https://img.shields.io/badge/release-v1.1.0-orange.svg)](https://github.com/YanZephyr14/astrbot_plugin_sticker_sense)
 
 **`astrbot_plugin_sticker_sense`** 是一款专为 AstrBot 设计的多模态社交表情与表情包感知增强插件。
 
@@ -28,11 +28,17 @@
   - **协议显式特征**：提取 OneBot V11 报文中的 `subType`/`sub_type`（1=表情包, 2=热图, 3=斗图, 7=贴纸, 9=动画表情）及 `summary`。
   - **动图探测 (Pillow)**：自动检测 GIF / 动态 WebP 等多帧动画，精准识别动图表情。
   - **启发式尺寸判别**：结合长宽阈值（默认 $\le 640$px）、宽高比与体积，智能区分小图表情包与高清生活照片/全屏截图。
-- 🐶 **QQ 经典表情语义转义**：
-  - 内置 150+ 常见 QQ 经典小黄脸代码对照表，将数字 ID 自动转译为 `[表情: 狗头]`、`[表情: 微笑]`、`[表情: 滑稽]` 等语义化文字。
-- 💬 **高情商社交交互引导**：
-  - 针对表情包提供社交互动指引（支持自然日常 `natural`、幽默接梗 `humorous`、温柔体察 `gentle` 三种风格）；
+- 🐶 **QQ 官方表情 100% 动态语义转义**：
+  - 优先从底层报文 `raw.faceText` 动态提取表情中文名（如 `/菜汪` -> `[表情: 菜汪]`），自动覆盖全部最新 QQ 官方小黄脸与商城表情；内置 150+ 经典静态字典作为高可靠兜底。
+- 🎬 **消除动图九宫格出戏幻觉**：
+  - 针对底层动图抽帧合成网格，自动向大模型注入“连贯动作”认知对齐规则，彻底杜绝大模型误以为是“九宫格拼图”或数格子出戏的问题；对静态图片不注入，防止误伤真实拼图。
+- 💬 **高情商社交交互与意图感知**：
+  - 针对表情包提供社交互动指引（支持自然日常 `natural`、幽默接梗 `humorous`、温柔体察 `gentle`、傲娇互怼 `roast` 四种风格）；
+  - 引导大模型洞察表情包背后的网络潜台词（指人打趣、认怂、赞赏、撒娇等）；
+  - **人设第一底线**：硬性约束模型在任何表情交互中严守既定性格人设，杜绝 OOC；
   - 针对普通生活照片或屏幕截图，引导大模型按正常分享或求助进行理解和协助。
+- 🥊 **支持双向斗图倾向提示**：
+  - 可选开关 `enable_meme_reaction`，当配合表情包插件（如 `meme_manager`）时，提示大模型在适宜氛围下主动回敬表情包配合斗图。
 - 🛡️ **纯表情空文本自动兜底**：
   - 用户纯发表情包或表情时自动填充语义文本，杜绝空 Prompt 异常或冷场。
 - ⚡ **零破坏与缓存友好**：
@@ -77,9 +83,10 @@ flowchart TD
 |:---|:---|:---|:---|
 | `enable_sticker_sense` | bool | `true` | 是否启用表情与表情包感知总开关 |
 | `enable_face_translation` | bool | `true` | 是否将 QQ 原生经典表情转义为语义化文字 |
-| `prompt_style` | string | `"natural"` | 交互风格：`natural` (自然日常) / `humorous` (幽默接梗) / `gentle` (温柔体察) |
+| `prompt_style` | string | `"natural"` | 交互风格：`natural` (自然日常) / `humorous` (幽默接梗) / `gentle` (温柔体察) / `roast` (傲娇互怼/吐槽) |
 | `max_sticker_dimension` | int | `640` | 启发式判定表情包的最大边长（像素） |
 | `auto_fill_empty_prompt` | bool | `true` | 纯表情包/表情空文本时是否自动补充兜底语义 |
+| `enable_meme_reaction` | bool | `false` | 启用双向斗图倾向提示（配合表情包相关插件） |
 | `custom_prompt_guide` | text | `""` | 可选追加的自定义表情包提示词指引 |
 
 ---

@@ -3,12 +3,12 @@ display_name: "表情感知 (Sticker Sense)"
 short_desc: "智能区分表情包与普通照片，语义化解析QQ表情，引导大模型自然接梗互动。"
 desc: |
   智能识别用户发送的是【表情包/梗图】还是【普通照片/截图】，告别大模型死板机械的“看图说话”。
-  - 支持多模态动图 (GIF/WebP) 与启发式尺寸检测；
-  - 自动转义 QQ 经典小黄脸 (Face) 与商城大表情 (mface) 为语义化文本；
-  - 动态注入社交交互引导（自然/幽默/温柔），引导模型按真人对话习惯自然反应；
-  - 纯表情包/表情空文本自动兜底；
+  - 支持多模态动图 (GIF/WebP) 与启发式尺寸检测，消除动图九宫格出戏幻觉；
+  - 动态精准提取 QQ 官方小黄脸 (Face) 中文语义，支持最新全部表情与商城大表情 (mface)；
+  - 动态注入社交交互引导（自然/幽默/温柔/傲娇互怼），严格守住原有角色人设底线；
+  - 支持双向斗图倾向提示与纯表情包空文本自动兜底；
   - 零侵入、零破坏，严格保护服务端 Prompt 缓存。
-version: "1.0.0"
+version: "1.1.0"
 author: "YanZephyr14 & AstrBot Community"
 repo: "https://github.com/YanZephyr14/astrbot_plugin_sticker_sense"
 astrbot_version: ">=4.5.7"

@@ -52,6 +52,7 @@ class MessageSenseResult:
     faces: list[str]
     has_stickers: bool = False
     has_normal_photos: bool = False
+    has_animated_stickers: bool = False
 
     @property
     def has_any_visual_or_emoji(self) -> bool:
@@ -132,9 +133,21 @@ class StickerDetector:
             if seg_type == "image":
                 image_segments.append(data)
             elif seg_type == "face":
-                fid = data.get("id")
-                if fid is not None:
-                    faces.append(f"[表情: {get_face_name(fid)}]")
+                # 优先从协议原始 raw 数据中提取动态 faceText（如 NapCat / OneBot 的 {"faceText": "/菜汪"}）
+                face_name: str | None = None
+                raw_info = data.get("raw")
+                if isinstance(raw_info, dict):
+                    raw_text = raw_info.get("faceText") or raw_info.get("text")
+                    if isinstance(raw_text, str) and raw_text.strip():
+                        face_name = raw_text.strip().lstrip("/").strip()
+
+                if not face_name:
+                    fid = data.get("id")
+                    if fid is not None:
+                        face_name = get_face_name(fid)
+
+                if face_name:
+                    faces.append(f"[表情: {face_name}]")
             elif seg_type == "mface":
                 # 商城大表情
                 summary = data.get("summary") or data.get("text") or "商城大表情"
@@ -294,6 +307,7 @@ class StickerDetector:
         detected_images: list[ImageDetectionResult] = []
         has_stickers = False
         has_normal = False
+        has_animated_stickers = False
 
         for i, path in enumerate(image_paths, 1):
             protocol_data = (
@@ -303,6 +317,8 @@ class StickerDetector:
             detected_images.append(res)
             if res.is_sticker:
                 has_stickers = True
+                if res.is_animated:
+                    has_animated_stickers = True
             else:
                 has_normal = True
 
@@ -311,4 +327,5 @@ class StickerDetector:
             faces=protocol_faces,
             has_stickers=has_stickers,
             has_normal_photos=has_normal,
+            has_animated_stickers=has_animated_stickers,
         )
