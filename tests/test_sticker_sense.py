@@ -220,8 +220,48 @@ class TestStickerSensePlugin:
         assert "🟢 启用" in res[0]
 
         # Test toggle command
+        plugin.put_kv_data = AsyncMock()
         toggle_gen = plugin.sticker_toggle(event)
         toggle_res = [item async for item in toggle_gen]
         assert len(toggle_res) == 1
         assert "🔴 已停用" in toggle_res[0]
         assert plugin.config["enable_sticker_sense"] is False
+        plugin.put_kv_data.assert_awaited_once_with("enable_sticker_sense", False)
+
+    @pytest.mark.asyncio
+    async def test_custom_prompt_guide_and_face_disabled(self, temp_dir):
+        gif_path = create_test_image(
+            temp_dir / "meme.gif", size=(180, 180), is_animated=True
+        )
+        context = MagicMock()
+        plugin = StickerSensePlugin(
+            context,
+            config={
+                "enable_sticker_sense": True,
+                "enable_face_translation": False,
+                "custom_prompt_guide": "请用傲娇的语气吐槽。",
+            },
+        )
+        plugin.get_kv_data = AsyncMock(return_value=None)
+        await plugin.initialize()
+
+        event = MagicMock(spec=AstrMessageEvent)
+        event.unified_msg_origin = "qq:group:999"
+        event.message_obj = MagicMock()
+        event.message_obj.raw_message = {
+            "message": [
+                {"type": "image", "data": {"subType": 1}},
+                {"type": "face", "data": {"id": 14}},
+            ]
+        }
+        event.message_obj.message = []
+
+        req = ProviderRequest(prompt="你好")
+        req.image_urls = [gif_path]
+
+        await plugin.on_llm_request(event, req)
+        assert len(req.extra_user_content_parts) == 1
+        text = req.extra_user_content_parts[0].text
+        assert "请用傲娇的语气吐槽" in text
+        # face translation is disabled, so [表情: 微笑] should NOT appear
+        assert "[表情: 微笑]" not in text

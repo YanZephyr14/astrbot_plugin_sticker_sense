@@ -17,3 +17,8 @@
 - [x] 验证所有单测用例全部通过
 - [x] 创建 GitHub 远程仓库并完成首次推送
 - [x] 更新根目录 `DEVLOG.md`
+- [x] 国际化多语言支持（`.astrbot-plugin/i18n/zh-CN.json` 与 `en-US.json`）
+- [x] 开源交付物建设（`README.md`、`LICENSE`、`requirements.txt`）
+- [x] 增强配置持久化（KV Storage 支持跨重启保留指令切换状态）
+- [x] 增强自定义追加词支持与配置联动测试（11 passed）
+- [x] 同步推送规范化更新至远程仓库并在实例热部署

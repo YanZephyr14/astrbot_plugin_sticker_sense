@@ -16,6 +16,7 @@
     "type": "string",
     "default": "natural",
     "options": ["natural", "humorous", "gentle"],
+    "labels": ["自然日常", "幽默接梗", "温柔体察"],
     "hint": "natural: 自然日常聊天；humorous: 幽默风趣、积极接梗斗图；gentle: 温柔细腻、注重体察对方情绪。"
   },
   "max_sticker_dimension": {
@@ -34,5 +35,11 @@
     "type": "bool",
     "default": true,
     "hint": "当用户只发了表情包或纯表情而没有任何文字时，自动补充语义文字（如「用户发送了一张表情包」），防止机器人无法触发或冷场。"
+  },
+  "custom_prompt_guide": {
+    "description": "自定义表情包引导追加词(可选)",
+    "type": "text",
+    "default": "",
+    "hint": "选填。若填写，将作为额外补充指引追加在表情包提示中。可用于强化特定人设的表情包接招习惯。"
   }
 }

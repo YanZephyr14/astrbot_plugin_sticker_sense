@@ -47,9 +47,18 @@
 - `enable_face_translation` (boolean): 是否开启 QQ 原生表情翻译，默认 true。
 - `prompt_style` (select): 表情包指引风格（`natural` 自然聊天 / `humorous` 幽默接梗 / `gentle` 温柔体贴）。
 - `max_sticker_dimension` (number): 启发式判定表情包的最大单边像素（默认 640）。
+- `auto_fill_empty_prompt` (boolean): 纯表情包空文本自动兜底，默认 true。
+- `custom_prompt_guide` (text): 自定义表情包引导追加词，默认空。
 
 ---
 
-## 4. 用户交互与管理
+## 4. 国际化与持久化规范
+- 国际化支持：提供 `.astrbot-plugin/i18n/zh-CN.json` 与 `en-US.json`。
+- 持久化支持：通过 `put_kv_data` 与 `get_kv_data` 实现开关状态跨会话/跨重启持久化。
+- 开源交付规范：提供符合社区标准的 `README.md` 与 `LICENSE` (MIT)。
+
+---
+
+## 5. 用户交互与管理
 - 指令 `/sticker`: 查看当前表情感知插件状态与配置概览。
-- 指令 `/sticker toggle`: 一键切换插件启用/停用。
+- 指令 `/sticker toggle`: 一键切换插件启用/停用并持久化写入。

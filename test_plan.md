@@ -16,7 +16,9 @@
    - 验证纯表情或纯表情包导致 `req.prompt` 为空时，兜底填充生效。
 4. **管理指令与配置测试**：
    - `/sticker` 状态查询。
-   - `/sticker toggle` 状态切换。
+   - `/sticker toggle` 状态切换并验证 KV 存储持久化调用。
+   - 自定义提示词追加（`custom_prompt_guide`）正确拼接测试。
+   - 表情翻译开关（`enable_face_translation=False`）阻断测试。
 
 ---
 

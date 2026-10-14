@@ -34,15 +34,23 @@ class StickerSensePlugin(Star):
 
     async def initialize(self) -> None:
         """异步生命周期初始化。"""
+        # 读取持久化的开关覆盖（若用户通过指令修改过）
+        try:
+            persisted_enabled = await self.get_kv_data("enable_sticker_sense", None)
+            if persisted_enabled is not None:
+                self.config["enable_sticker_sense"] = bool(persisted_enabled)
+        except Exception as exc:
+            logger.debug(f"[StickerSense] 读取持久化配置异常，回退默认配置: {exc}")
+
         enabled = self.config.get("enable_sticker_sense", True)
         style = self.config.get("prompt_style", "natural")
         logger.info(
-            f"表情感知插件 (Sticker Sense) 已加载，状态: {'启用' if enabled else '停用'}，交互风格: {style}。"
+            f"[StickerSense] 表情感知插件已加载，状态: {'启用' if enabled else '停用'}，交互风格: {style}。"
         )
 
     async def terminate(self) -> None:
         """异步生命周期终止清理。"""
-        logger.info("表情感知插件 (Sticker Sense) 已卸载。")
+        logger.info("[StickerSense] 表情感知插件已卸载。")
 
     def _build_style_guide(self, style: str) -> str:
         """根据配置风格生成对应的交互要求。
@@ -83,6 +91,8 @@ class StickerSensePlugin(Star):
         """
         style = self.config.get("prompt_style", "natural")
         style_rule = self._build_style_guide(style)
+        face_translation_enabled = self.config.get("enable_face_translation", True)
+        display_faces = sense.faces if face_translation_enabled else []
 
         lines: list[str] = [
             "<image_interaction_guide>",
@@ -95,16 +105,16 @@ class StickerSensePlugin(Star):
             )
             for item in sense.images:
                 lines.append(f"- {item.describe()}")
-            if sense.faces:
-                lines.append(f"- 伴随表情符号: {', '.join(sense.faces)}")
+            if display_faces:
+                lines.append(f"- 伴随表情符号: {', '.join(display_faces)}")
             lines.append(f"【互动原则】：{style_rule}")
 
         elif sense.has_stickers and sense.has_normal_photos:
             lines.append("检测到用户同时发送了【表情包】与【普通图片/截图】：")
             for item in sense.images:
                 lines.append(f"- {item.describe()}")
-            if sense.faces:
-                lines.append(f"- 伴随表情符号: {', '.join(sense.faces)}")
+            if display_faces:
+                lines.append(f"- 伴随表情符号: {', '.join(display_faces)}")
             lines.append(
                 f"【互动原则】：请区分对待——对表情包请按社交梗与情绪自然反应（{style_rule}）；"
                 "对普通照片或截图则正常关注内容并提供协助或评论。"
@@ -114,18 +124,22 @@ class StickerSensePlugin(Star):
             lines.append("检测到用户发送的内容为【普通图片 / 拍摄照片 / 屏幕截图】：")
             for item in sense.images:
                 lines.append(f"- {item.describe()}")
-            if sense.faces:
-                lines.append(f"- 伴随表情符号: {', '.join(sense.faces)}")
+            if display_faces:
+                lines.append(f"- 伴随表情符号: {', '.join(display_faces)}")
             lines.append(
                 "【互动原则】：用户正在分享现实生活细节、寻求帮助或展示内容，"
                 "请结合对话上下文正常理解与分析图片内容。"
             )
 
-        elif sense.faces:
-            lines.append(f"检测到用户发送了表情符号: {', '.join(sense.faces)}。")
+        elif display_faces:
+            lines.append(f"检测到用户发送了表情符号: {', '.join(display_faces)}。")
             lines.append(
                 "【互动原则】：请结合该表情符号所体现的语气与情绪倾向，自然贴合地回应用户。"
             )
+
+        custom_guide = (self.config.get("custom_prompt_guide") or "").strip()
+        if custom_guide:
+            lines.append(f"【个性化补充指引】：{custom_guide}")
 
         lines.append("</image_interaction_guide>")
         return "\n".join(lines)
@@ -165,13 +179,16 @@ class StickerSensePlugin(Star):
 
         # 3. 针对纯表情或纯表情包空 Prompt 进行兜底保护
         auto_fill = self.config.get("auto_fill_empty_prompt", True)
+        face_translation_enabled = self.config.get("enable_face_translation", True)
         if auto_fill and not (req.prompt or "").strip():
             if sense.has_stickers:
                 req.prompt = "（用户向你发送了一张表情包）"
             elif sense.has_normal_photos:
                 req.prompt = "（用户向你分享了一张图片）"
-            elif sense.faces:
+            elif sense.faces and face_translation_enabled:
                 req.prompt = f"（用户向你发送了表情：{', '.join(sense.faces)}）"
+            elif sense.faces:
+                req.prompt = "（用户向你发送了表情符号）"
 
         # 4. 构建动态指引并通过 extra_user_content_parts 临时注入
         guidance = self._generate_llm_guidance(sense)
@@ -198,6 +215,7 @@ class StickerSensePlugin(Star):
         style = self.config.get("prompt_style", "natural")
         max_dim = self.config.get("max_sticker_dimension", 640)
         auto_fill = self.config.get("auto_fill_empty_prompt", True)
+        custom_guide = self.config.get("custom_prompt_guide", "")
 
         msg = (
             "✨ 【表情感知 (Sticker Sense) 运行状态】\n"
@@ -205,17 +223,23 @@ class StickerSensePlugin(Star):
             f"• 表情符号转义: {'🟢 开启' if face_trans else '🔴 关闭'}\n"
             f"• 交互引导风格: {style}\n"
             f"• 启发式尺寸上限: {max_dim} px\n"
-            f"• 空文本自动兜底: {'🟢 开启' if auto_fill else '🔴 关闭'}\n\n"
+            f"• 空文本自动兜底: {'🟢 开启' if auto_fill else '🔴 关闭'}\n"
+            f"• 自定义补充指引: {custom_guide if custom_guide else '(未设定)'}\n\n"
             "💡 提示: 可通过 WebUI 面板直接修改配置，或使用 /sticker toggle 快速切换开关。"
         )
         yield event.plain_result(msg)
 
     @sticker.command("toggle")
     async def sticker_toggle(self, event: AstrMessageEvent):
-        """快速切换表情感知插件的启用状态。"""
+        """快速切换表情感知插件的启用状态并持久化。"""
         current = self.config.get("enable_sticker_sense", True)
         new_state = not current
         self.config["enable_sticker_sense"] = new_state
+
+        try:
+            await self.put_kv_data("enable_sticker_sense", new_state)
+        except Exception as exc:
+            logger.warning(f"[StickerSense] 保存状态失败: {exc}")
 
         state_text = "🟢 已启用" if new_state else "🔴 已停用"
         yield event.plain_result(f"表情感知功能已切换为: {state_text}")

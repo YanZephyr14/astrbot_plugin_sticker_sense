@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "display_name": "Sticker Sense",
+    "short_desc": "Distinguish memes/stickers from photos, parse emojis, and guide LLM to respond socially.",
+    "desc": "Intelligently distinguishes whether the user sent a meme/sticker or a normal photo/screenshot, guiding the LLM to respond like a real human instead of mechanically describing pixels. Features QQ emoji semantic translation and non-invasive prompt injection."
+  },
+  "config": {
+    "enable_sticker_sense": {
+      "description": "Enable Sticker Sense",
+      "hint": "When enabled, the plugin automatically detects stickers and memes, guiding LLMs to respond socially."
+    },
+    "enable_face_translation": {
+      "description": "Translate QQ Emojis",
+      "hint": "Translates QQ native emojis (e.g. Doge, Smile) into semantic text for the LLM to understand."
+    },
+    "prompt_style": {
+      "description": "Interaction Style",
+      "labels": ["Natural", "Humorous", "Gentle"],
+      "hint": "natural: friendly daily conversation; humorous: witty banter and meme interaction; gentle: warm, attentive emotional validation."
+    },
+    "max_sticker_dimension": {
+      "description": "Max Sticker Dimension (px)",
+      "hint": "Static images with width and height within this threshold will be treated as stickers if protocol metadata is absent."
+    },
+    "auto_fill_empty_prompt": {
+      "description": "Auto Fallback for Empty Prompt",
+      "hint": "Automatically fills empty prompts with semantic hints when users send only stickers or emojis."
+    },
+    "custom_prompt_guide": {
+      "description": "Custom Prompt Guidance (Optional)",
+      "hint": "Optional custom instruction appended to the sticker interaction guide."
+    }
+  }
+}
