@@ -24,6 +24,9 @@
    - 动图连贯认知规范注入验证（动图表情包包含动图认知规范且杜绝九宫格出戏；静态图片绝不注入该规范以防误伤）。
    - `roast` 风格与防 OOC 约束验证（提示词包含幽默互怼及严守既有人设声明）。
    - `enable_meme_reaction` 双向斗图倾向提示触发测试。
+6. **v1.1.1 平台适配声明校验**：
+   - 检验 `metadata.yaml` 中的 `support_platforms` 严格限定于 QQ 协议适配器（`aiocqhttp`, `qq_official`, `qq_official_webhook`）。
+   - 杜绝声明 Telegram、Discord、WeCom 等不支持 QQ 专有表情段的非 QQ 平台。
 
 ---
 

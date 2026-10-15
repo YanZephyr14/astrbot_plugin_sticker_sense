@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+import yaml
 from PIL import Image as PILImage
 
 from astrbot.core.agent.message import TextPart
@@ -326,3 +327,37 @@ class TestStickerSensePlugin:
         assert "【动图认知规范】" not in text_static
         assert "切勿将其误认为九宫格" not in text_static
         assert "【意图与人设原则】" in text_static
+
+
+class TestPluginMetadata:
+    """Test plugin metadata configuration and platform compatibility."""
+
+    def test_metadata_platforms_restricted_to_qq(self):
+        meta_path = (
+            Path(__file__).parent.parent / "metadata.yaml"
+        )
+        assert meta_path.exists(), "metadata.yaml must exist"
+
+        with open(meta_path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+
+        assert data["version"] == "1.1.1"
+        support_platforms = data.get("support_platforms", [])
+
+        # 平台应严格限定为 QQ 适配器
+        expected_platforms = ["aiocqhttp", "qq_official", "qq_official_webhook"]
+        assert support_platforms == expected_platforms
+
+        # 确保不包含非 QQ 平台
+        prohibited_platforms = [
+            "telegram",
+            "discord",
+            "webchat",
+            "wecom",
+            "lark",
+            "dingtalk",
+            "slack",
+        ]
+        for p in prohibited_platforms:
+            assert p not in support_platforms, f"Platform {p} should not be in QQ-exclusive plugin"
+

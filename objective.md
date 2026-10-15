@@ -3,8 +3,9 @@
 ## 1. 项目定位与背景
 
 - **插件名称**：`astrbot_plugin_sticker_sense` (表情感知 / Sticker Sense)
-- **定位**：AstrBot 多模态社交表情与表情包感知增强插件。
+- **定位**：AstrBot 专为 QQ 生态深度定制的多模态社交表情与表情包感知增强插件。
 - **市场分类**：`AI 增强` (AI Enhancement)。
+- **支持平台**：严格面向 QQ 生态平台适配器（`aiocqhttp`, `qq_official`, `qq_official_webhook`）。
 - **痛点背景**：
   1. 在现有聊天中，用户发送表情包（Meme/斗图/GIF/贴纸）时，AstrBot 底层将其一律视为普通的 `Comp.Image` 喂给大模型。大模型在收到图片后往往机械地进行“看图说话”（描述画面构图、字样等），而无法像真人社交一样理解用户是在使用表情包表达情绪、接梗或调侃。
   2. 部分协议端（如 QQ / OneBot V11）的经典表情（Face 如微笑、狗头）在主文本中丢失，商城大表情（MarketFace）被忽略丢弃，导致大模型无法感知用户的表情符号。

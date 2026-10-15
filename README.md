@@ -6,11 +6,20 @@
 
 [![AstrBot](https://img.shields.io/badge/AstrBot->=4.5.7-blue.svg)](https://github.com/AstrBotDevs/AstrBot)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![GitHub release](https://img.shields.io/badge/release-v1.1.0-orange.svg)](https://github.com/YanZephyr14/astrbot_plugin_sticker_sense)
+[![GitHub release](https://img.shields.io/badge/release-v1.1.1-orange.svg)](https://github.com/YanZephyr14/astrbot_plugin_sticker_sense)
 
-**`astrbot_plugin_sticker_sense`** 是一款专为 AstrBot 设计的多模态社交表情与表情包感知增强插件。
+**`astrbot_plugin_sticker_sense`** 是一款专为 QQ 社交生态（OneBot V11 / aiocqhttp、QQ 官方机器人）深度定制的多模态表情与表情包感知增强插件。
 
 在最小风险（零侵入、不改动主程序任何代码）前提下，解决大模型分不清“表情包”和“普通照片”、丢失 QQ 经典表情以及死板“看图说话”的问题，让机器人像真人一样读懂表情包与梗，幽默有温度地社交互动！
+
+---
+
+## 🌐 支持平台
+
+本插件专为 **QQ 生态** 深度定制，支持 AstrBot 如下 QQ 平台适配器：
+- `aiocqhttp`：OneBot V11 标准协议端（如 NapCat、Lagrange、LLOneBot 等 QQ 个人号/机器人接入）
+- `qq_official`：腾讯 QQ 官方开放平台机器人
+- `qq_official_webhook`：腾讯 QQ 官方 Webhook 机器人
 
 ---
 

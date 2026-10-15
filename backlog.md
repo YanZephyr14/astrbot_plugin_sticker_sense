@@ -34,3 +34,10 @@
   - [x] Ruff 检查与代码格式化通过
   - [x] 提交专属 Git 仓库并同步远程 GitHub
   - [x] 热同步至运行实例目录并更新 `DEVLOG.md`
+- [x] **v1.1.1 平台支持范围修正与元数据收敛**：
+  - [x] 确立 QQ 生态专属定位（纠正多填的 Telegram/Discord/WeCom 等非 QQ 平台）
+  - [x] `metadata.yaml` 严格限定支持平台为 `aiocqhttp`、`qq_official`、`qq_official_webhook`
+  - [x] 同步更新 `README.md`、`objective.md`、`test_plan.md`
+  - [x] 新增平台声明单测用例并确保全量测试通过
+  - [x] 提交并推送到 GitHub 远程仓库，热同步至本地运行实例并追加 `DEVLOG.md`
+
